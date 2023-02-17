@@ -1,0 +1,264 @@
+from tkinter import *
+import tkinter.messagebox as msg
+from tkinter.filedialog import askopenfilename,asksaveasfilename
+import os
+import webbrowser
+from PIL import Image,ImageTk
+import re
+
+root=Tk()
+root.title("Untitled-Notepad")
+#root.wm_iconbitmap("ak.ico")
+
+def open_file():
+    global file
+    try:
+        file=askopenfilename(defaultextension=".txt",filetype=[("A
+
+        if file=="":
+            file=None
+        else:
+            root.title(os.path.basename(file)+"- Notepad")
+            text.delete("1.0","end")
+            f=open(file,"r")
+            text.insert(1.0,f.read())
+            f.close()
+    except Exception as e:
+        msg.showerror("Error!",f"Hey user! open a text file because {e}")
+def save():
+    global file
+    try:
+
+        file = asksaveasfilename(initialfile="Unitiled.txt", filetype=[("All Files", "."), ("Text Documents", "*.txt")])
+        if file==None: #If file is saving for the first time the we used this
+            if file=="":
+                file=None
+            else:
+                f=open(file,"w")
+                f.write(text.get("1.0","end"))
+                f.close()
+                root.title(os.path.basename(file) + "- Notepad")
+                msg.showinfo("Sucessfull",f"you sucessfully saved ")
+        else: #here i am overwriting a old file to to save the new text in it.
+            f = open(file, "w")
+            f.write(text.get("1.0", "end"))
+            f.close()
+            root.title(os.path.basename(file) + "- Notepad")
+            msg.showinfo("Sucessfull", f"you sucessfully saved ")
+
+    except Exception as g:
+        msg.showerror("Error!", f"Hey user! open a text file because {g}")
+def new():
+    root = Tk()
+    root.geometry("665x439")
+    root.title("Untitled-Notepad")
+    #root.wm_iconbitmap("ak.ico")
+
+    def open_file():
+        global file
+        try:
+            file = askopenfilename(defaultextension=".txt",
+                                   filetype=[("All Files", "."), ("Text Documents", "*.txt")])
+
+            if file == "":
+                file = None
+            else:
+                root.title(os.path.basename(file) + "- Notepad")
+                text.delete("1.0", "end")
+                f = open(file, "r")
+                text.insert(1.0, f.read())
+                f.close()
+        except Exception as e:
+            msg.showerror("Error!", f"Hey user! open a text file because {e}")
+
+    def save():
+        global file
+        try:
+
+            file = asksaveasfilename(initialfile="Unitiled.txt",
+                                     filetype=[("All Files", "."), ("Text Documents", "*.txt")])
+            if file == None:  # If file is saving for the first time the we used this
+                if file == "":
+                    file = None
+                else:
+                    f = open(file, "w")
+                    f.write(text.get("1.0", "end"))
+                    f.close()
+                    root.title(os.path.basename(file) + "- Notepad")
+                    msg.showinfo("Sucessfull", f"you sucessfully saved ")
+            else:  # here i am overwriting a old file to to save the new text in it.
+                f = open(file, "w")
+                f.write(text.get("1.0", "end"))
+                f.close()
+                root.title(os.path.basename(file) + "- Notepad")
+                msg.showinfo("Sucessfull", f"you sucessfully saved ")
+
+        except Exception as g:
+            msg.showerror("Error!", f"Hey user! open a text file because {g}")
+    def cut():
+        text.event_generate(("<<Cut>>"))  # TO CUT THE WORDS WRITEEN IN NOTEPAD
+
+    def copy():
+        text.event_generate(("<<Copy>>"))  # to copt the word written in notepad
+
+    def paste():
+        text.event_generate(("<<Paste>>"))
+
+    def about_notepad():
+        msg.showinfo("About Notepad", "Created by Lucifer")
+
+    def over():
+        exit()
+
+    def remove():
+        text.delete("1.0", "end")  # To delete all the elements from text
+
+    # ADDING MENUBARS
+    menubar = Menu(root)
+
+    # FILE
+    m1 = Menu(menubar, tearoff=0)
+    m1.add_command(label="New File", command=new)
+    m1.add_command(label="open..", command=open_file)
+    m1.add_separator()
+    m1.add_command(label="Save", command=save)
+    m1.add_command(label="Exit", command=over)
+    root.config(menu=menubar)
+    menubar.add_cascade(label="File", menu=m1)
+
+    # EDIT
+    m2 = Menu(menubar, tearoff=0)
+    m2.add_command(label="Cut", command=cut)
+    m2.add_command(label="Copy", command=copy)
+    m2.add_command(label="Paste", command=paste)
+    m2.add_separator()
+    m2.add_command(label="Delete", command=remove)
+    m2.add_command(label="Find")
+    m2.add_command(label="Find Next")
+    root.config(menu=menubar)
+    menubar.add_cascade(label="Edit", menu=m2)
+
+    # View
+    m3 = Menu(menubar, tearoff=0)
+    m3.add_command(label="Zoom In")
+    m3.add_command(label="Zoom Out")
+    m3.add_separator()
+    m3.add_command(label="Status Bar")
+    root.config(menu=menubar)
+    menubar.add_cascade(label="View", menu=m3)
+
+    # Help
+    m4 = Menu(menubar, tearoff=0)
+    m4.add_command(label="View Help")
+    m4.add_command(label="Send Feedback")
+    m4.add_command(label="About Notepad", command=about_notepad)
+    root.config(menu=menubar)
+    menubar.add_cascade(label="Help", menu=m4)
+
+    # adding scrollbar and text
+    scrollbar = Scrollbar(root)
+    scrollbar.pack(side=RIGHT, fill=Y)
+    text = Text(root, yscrollcommand=scrollbar.set)
+    text.pack(fill=BOTH)
+    scrollbar.config(command=text.yview)
+
+    root.mainloop()
+
+def view_help():
+    webbrowser.open("https://www.thewindowsclub.com/basic-notepad-tips")
+def send_feedback():
+    root = Tk()
+    root.geometry("600x900")
+    root.title("FeedBack")
+    root.maxsize(600,900)
+    root.minsize(600,900)
+    root.wm_iconbitmap("ak.ico")
+
+    chk = IntVar()
+    nameent = StringVar()
+    mailent = StringVar()
+    feedbackent = StringVar()
+
+    def submit():
+        print(nameent.get())
+        msg.showinfo("Submitted","Your Feedback Has been succefully submitted")
+
+    label=Label(root,text="-------------------------",font="lucida 30 bold").pack()
+    label=Label(root,text="Feedback",font="lucida 30 bold").pack()
+    label=Label(root,text="-------------------------",font="lucida 30 bold").pack()
+    name= Label(root, text="Full Name :",font="comicsanes 15 bold").place(x=26,y=190)
+    mail= Label(root, text="Email/phone no :",font="comicsanes 15 bold").place(x=26,y=240)
+    Feedback= Label(root, text="Feedback :",font="comicsanes 15 bold").place(x=26,y=300)
+
+    nameout=Entry(root,textvariable=nameent).place(x=226,y=190,width=250,height=25)
+    mailout=Entry(root,textvariable=mailent).place(x=226,y=240,width=250,height=25)
+    feebackout=Entry(root,textvariable=feedbackent).place(x=229,y=300,width=250,height=100)
+    label=Label(root,text="We are Greatful to Have your precious Feedback never mind if its for ",font="lucida 13 ").place(x=17,y=470)
+    label=Label(root,text="or against we we want you to serve the best, Hope for the best",font="lucida 13 ").place(x=17,y=490)
+    label=Label(root,text="Thanking you,",font="lucida 13 ").place(x=17,y=540)
+    label=Label(root,text="Team Notepad",font="lucida 13 ").place(x=17,y=565)
+    btn=Checkbutton(root,text="I have read all the above",variable=chk,font="luicda").place(x=180,y=600)
+    submit=Button(root,text="Submit",font="lucida 15 bold",bg="brown",fg="white",command=submit).place(x=240,y=650)
+    root.mainloop()
+def cut():
+    text.event_generate(("<<Cut>>")) #TO CUT THE WORDS WRITEEN IN NOTEPAD
+def copy():
+    text.event_generate(("<<Copy>>")) #to copt the word written in notepad
+def paste():
+    text.event_generate(("<<Paste>>"))
+def about_notepad():
+    msg.showinfo("About Notepad","Created by Lucifer")
+def over():
+    exit()
+def remove():
+    text.delete("1.0","end") #To delete all the elements from text
+#ADDING MENUBARS
+menubar=Menu(root)
+
+#FILE
+m1=Menu(menubar,tearoff=0)
+m1.add_command(label="New File",command=new)
+m1.add_command(label="open..",command=open_file)
+m1.add_separator()
+m1.add_command(label="Save",command=save)
+m1.add_command(label="Exit",command=over)
+root.config(menu=menubar)
+menubar.add_cascade(label="File",menu=m1)
+
+#EDIT
+m2=Menu(menubar,tearoff=0)
+m2.add_command(label="Cut",command=cut)
+m2.add_command(label="Copy",command=copy)
+m2.add_command(label="Paste",command=paste)
+m2.add_separator()
+m2.add_command(label="Delete",command=remove)
+m2.add_command(label="Find")
+m2.add_command(label="Find Next")
+root.config(menu=menubar)
+menubar.add_cascade(label="Edit",menu=m2)
+
+#View
+m3=Menu(menubar,tearoff=0)
+m3.add_command(label="Zoom In")
+m3.add_command(label="Zoom Out")
+m3.add_separator()
+m3.add_command(label="Status Bar")
+root.config(menu=menubar)
+menubar.add_cascade(label="View",menu=m3)
+
+#Help
+m4=Menu(menubar,tearoff=0)
+m4.add_command(label="View Help",command=view_help)
+m4.add_command(label="Send Feedback",command=send_feedback)
+m4.add_command(label="About Notepad",command=about_notepad)
+root.config(menu=menubar)
+menubar.add_cascade(label="Help",menu=m4)
+
+#adding scrollbar and text
+scrollbar=Scrollbar(root)
+scrollbar.pack(side=RIGHT,fill=Y)
+text=Text(root,yscrollcommand=scrollbar.set)
+text.pack(fill=BOTH)
+scrollbar.config(command=text.yview)
+
+root.mainloop()ll Files","."),("Text Documents","*.txt")])
